@@ -13,8 +13,9 @@
 %  	matlab -r "try,daw2csv('path/to/*_task.mat','$@'),end;quit"
 
 function daw_all_visits = daw2csv(mat_glob, outfile,  sdir)
-% DAW2CSV combine all daw matfiles into per trail csv file
-% colums picked by read_daw.m: id (subj_date), choice1, choice1, state, money 
+% DAW2CSV combine all daw matfiles in MAT_GLOB into per trail csv file
+% returns combined dataframe. *sideffect* writes OUTFILE if given
+% colums created by read_daw.m: id (subj_date), choice1, choice1, state, money
 %
 % ARGUMENTS:
 %   mat_glob  file glob (string) wildcard/star path to all mat files
@@ -47,19 +48,19 @@ for mat_file_obj = dir(mat_glob)'
       warning(mat_file, 'failed to read!')
       continue
    end
-   id_name = daw_idv.id{1},
    daw_all_visits = [daw_all_visits; daw_idv];
 
    % write tmp files?
+   id_name = daw_idv.id{1};
    idv_out=fullfile(sdir, id_name, 'daw', ['daw_' id_name '.csv']);
    if ~isempty(sdir) && ~exists(idv_out,'file')
       mkdir(fileparts(idv_out));
-      writetable(daw_idv,idv_out);
+      writetable(daw_idv, idv_out);
    end
 end
 
 if ~isempty(outfile)
-   writetable(daw_all_visits, outfile)
+   writetable(daw_all_visits, outfile);
 end
 
 end
