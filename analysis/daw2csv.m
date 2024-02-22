@@ -40,9 +40,14 @@ for mat_file_obj = dir(mat_glob)'
        warning(mat_file, 'has no data!')
        continue
    end
-   daw_idv = read_daw(mat_file);
-   id_name = daw_idv.id(1);
-
+   try
+      daw_idv = read_daw(mat_file);
+   catch e
+      e,
+      warning(mat_file, 'failed to read!')
+      continue
+   end
+   id_name = daw_idv.id{1},
    daw_all_visits = [daw_all_visits; daw_idv];
 
    % write tmp files?
